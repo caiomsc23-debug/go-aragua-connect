@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Search, Briefcase, Building2 } from "lucide-react";
-import heroImage from "@/assets/hero-araguaina.jpg";
+import heroImage from "@/assets/hero-araguaina-new.jpg";
 
 const HeroSection = () => {
   return (
