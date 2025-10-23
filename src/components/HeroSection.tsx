@@ -41,14 +41,11 @@ const HeroSection = () => {
           </div>
           
           <div className="flex-shrink-0 animate-fade-in">
-            <div className="relative p-8 rounded-3xl bg-gradient-to-br from-[#F9C400] via-[#FF6A00] to-[#EA3A60] shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#642D91]/20 via-transparent to-[#43C0F6]/20 rounded-3xl" />
-              <img 
-                src={goAraguainaLogo} 
-                alt="GO Araguaína" 
-                className="relative w-64 md:w-80 h-auto drop-shadow-2xl"
-              />
-            </div>
+            <img 
+              src={goAraguainaLogo} 
+              alt="GO Araguaína" 
+              className="w-64 md:w-80 h-auto drop-shadow-2xl"
+            />
           </div>
         </div>
       </div>
