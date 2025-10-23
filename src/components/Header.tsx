@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
 import prefeituraLogo from "@/assets/prefeitura-araguaina-logo.png";
+import goAraguainaLogo from "@/assets/logo-go-araguaina.png";
 
 const Header = () => {
   return (
@@ -15,10 +16,11 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="text-2xl font-bold">
-            <span className="text-primary">GO</span>
-            <span className="text-foreground"> Araguaína</span>
-          </div>
+          <img 
+            src={goAraguainaLogo} 
+            alt="GO Araguaína" 
+            className="h-16 w-auto"
+          />
         </div>
 
         <Button variant="default" className="gap-2">
