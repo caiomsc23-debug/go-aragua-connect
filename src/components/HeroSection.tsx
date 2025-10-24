@@ -1,51 +1,59 @@
 import { Button } from "@/components/ui/button";
-import { Search, Briefcase, Building2 } from "lucide-react";
-import heroImage from "@/assets/hero-araguaina-new.jpg";
+import { ArrowRight } from "lucide-react";
 import goAraguainaLogo from "@/assets/logo-go-araguaina.png";
+import smilingPerson from "@/assets/smiling-person.jpg";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-[600px] flex items-center justify-center pt-16">
+    <section className="relative min-h-[600px] flex items-center overflow-hidden bg-gradient-to-br from-cyan-50 via-teal-50 to-blue-50">
+      {/* Faixa diagonal no lado direito */}
       <div 
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroImage})` }}
+        className="absolute top-0 right-0 bottom-0 w-[40%] bg-purple-100/70 backdrop-blur-sm"
+        style={{
+          clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0% 100%)',
+        }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-accent/75" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <img 
+            src={smilingPerson} 
+            alt="Pessoa sorridente representando confiança e alegria"
+            className="h-full w-full object-cover object-center opacity-90"
+          />
+        </div>
       </div>
-      
-      <div className="container mx-auto px-4 relative z-10 py-20">
-        <div className="flex flex-col md:flex-row items-center gap-8 max-w-6xl">
-          <div className="flex-1">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 animate-fade-in">
+
+      {/* Conteúdo principal */}
+      <div className="container mx-auto px-6 md:px-12 py-16 md:py-24 relative z-10">
+        <div className="max-w-2xl">
+          {/* Logo */}
+          <div className="mb-8 animate-fade-in">
+            <img 
+              src={goAraguainaLogo} 
+              alt="GO Araguaína - Logotipo"
+              className="w-48 md:w-64 h-auto"
+            />
+          </div>
+
+          {/* Texto */}
+          <div className="mb-8 animate-fade-in space-y-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
               Conectando você às oportunidades da cidade.
             </h1>
-            <p className="text-lg md:text-xl text-white/90 mb-8 animate-fade-in">
+            <p className="text-base md:text-lg text-gray-700 leading-relaxed">
               O GO Araguaína é a plataforma que une cidadãos, trabalhadores e empresas locais, 
               promovendo crescimento e novas oportunidades para toda a comunidade.
             </p>
-            
-            <div className="flex flex-wrap gap-4 animate-fade-in">
-              <Button size="lg" variant="secondary" className="gap-2 shadow-strong">
-                <Search className="w-5 h-5" />
-                Encontrar serviços
-              </Button>
-              <Button size="lg" variant="outline" className="gap-2 bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                <Briefcase className="w-5 h-5" />
-                Buscar vagas
-              </Button>
-              <Button size="lg" variant="outline" className="gap-2 bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                <Building2 className="w-5 h-5" />
-                Cadastrar negócio
-              </Button>
-            </div>
           </div>
-          
-          <div className="flex-shrink-0 animate-fade-in">
-            <img 
-              src={goAraguainaLogo} 
-              alt="GO Araguaína" 
-              className="w-64 md:w-80 h-auto drop-shadow-2xl"
-            />
+
+          {/* Botão */}
+          <div className="animate-fade-in">
+            <Button 
+              size="lg" 
+              className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-8 py-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 gap-2"
+            >
+              Entrar no Portal
+              <ArrowRight className="w-5 h-5" />
+            </Button>
           </div>
         </div>
       </div>
