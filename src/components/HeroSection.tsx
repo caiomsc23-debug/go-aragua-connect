@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import goAraguainaLogo from "@/assets/logo-go-araguaina.png";
-import smilingPerson from "@/assets/smiling-person.jpg";
+import araguainaCity from "@/assets/araguaina-city.jpg";
 
 const HeroSection = () => {
   return (
@@ -15,8 +15,8 @@ const HeroSection = () => {
       >
         <div className="absolute inset-0 flex items-center justify-center">
           <img 
-            src={smilingPerson} 
-            alt="Pessoa sorridente representando confiança e alegria"
+            src={araguainaCity} 
+            alt="Vista aérea da cidade de Araguaína"
             className="h-full w-full object-cover object-center opacity-90"
           />
         </div>
