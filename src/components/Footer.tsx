@@ -69,6 +69,13 @@ const Footer = () => {
 
         <div className="border-t border-background/20 pt-8 text-center text-background/70">
           <p>&copy; {new Date().getFullYear()} Prefeitura de Araguaína. Todos os direitos reservados.</p>
+          <a 
+            href="/admin/login" 
+            className="inline-block mt-2 text-xs text-background/40 hover:text-background/60 transition-colors"
+            aria-label="Acesso administrativo"
+          >
+            Admin
+          </a>
         </div>
       </div>
     </footer>
