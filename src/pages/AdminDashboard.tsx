@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, LogOut, Save, Image as ImageIcon } from "lucide-react";
+import { Loader2, LogOut, Save } from "lucide-react";
+import { ImageUpload } from "@/components/ImageUpload";
 
 interface ContentData {
   hero_title: string;
@@ -173,21 +174,11 @@ const AdminDashboard = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="image">
-                <div className="flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4" />
-                  Caminho da Imagem de Fundo
-                </div>
-              </Label>
-              <Input
-                id="image"
-                value={content.hero_background_image}
-                onChange={(e) => setContent({ ...content, hero_background_image: e.target.value })}
-                placeholder="/src/assets/araguaina-city.jpg"
+              <Label>Imagem de Fundo</Label>
+              <ImageUpload
+                currentImage={content.hero_background_image}
+                onImageUploaded={(url) => setContent({ ...content, hero_background_image: url })}
               />
-              <p className="text-sm text-gray-500">
-                Cole o caminho da imagem localizada na pasta assets
-              </p>
             </div>
 
             <Button
