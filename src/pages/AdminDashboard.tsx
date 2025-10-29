@@ -8,14 +8,26 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, LogOut, Save } from "lucide-react";
+import { Loader2, LogOut, Save, Eye, EyeOff, ChevronUp, ChevronDown } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
+import { Switch } from "@/components/ui/switch";
 
 interface ContentData {
   hero_title: string;
   hero_description: string;
   hero_button_text: string;
   hero_background_image: string;
+}
+
+interface MenuSection {
+  id: string;
+  section_key: string;
+  title: string;
+  is_visible: boolean;
+  display_order: number;
+  color_hue: number;
+  color_saturation: number;
+  color_lightness: number;
 }
 
 const AdminDashboard = () => {
@@ -30,6 +42,7 @@ const AdminDashboard = () => {
     hero_button_text: "",
     hero_background_image: "",
   });
+  const [sections, setSections] = useState<MenuSection[]>([]);
 
   useEffect(() => {
     if (!authLoading && (!user || !isAdmin)) {
@@ -40,6 +53,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (user && isAdmin) {
       loadContent();
+      loadSections();
     }
   }, [user, isAdmin]);
 
@@ -67,6 +81,112 @@ const AdminDashboard = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadSections = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("menu_sections")
+        .select("*")
+        .order("display_order");
+
+      if (error) throw error;
+      if (data) setSections(data);
+    } catch (error: any) {
+      toast({
+        title: "Erro ao carregar seções",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleSectionVisibility = async (sectionId: string, currentVisibility: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("menu_sections")
+        .update({ is_visible: !currentVisibility })
+        .eq("id", sectionId);
+
+      if (error) throw error;
+
+      setSections(sections.map(s => 
+        s.id === sectionId ? { ...s, is_visible: !currentVisibility } : s
+      ));
+
+      toast({
+        title: "Seção atualizada",
+        description: "A visibilidade da seção foi alterada.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro ao atualizar",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const moveSectionUp = async (index: number) => {
+    if (index === 0) return;
+    
+    const newSections = [...sections];
+    [newSections[index - 1], newSections[index]] = [newSections[index], newSections[index - 1]];
+    
+    try {
+      for (let i = 0; i < newSections.length; i++) {
+        const { error } = await supabase
+          .from("menu_sections")
+          .update({ display_order: i + 1 })
+          .eq("id", newSections[i].id);
+        
+        if (error) throw error;
+      }
+      
+      setSections(newSections.map((s, i) => ({ ...s, display_order: i + 1 })));
+      
+      toast({
+        title: "Ordem atualizada",
+        description: "A seção foi movida para cima.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro ao reordenar",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const moveSectionDown = async (index: number) => {
+    if (index === sections.length - 1) return;
+    
+    const newSections = [...sections];
+    [newSections[index], newSections[index + 1]] = [newSections[index + 1], newSections[index]];
+    
+    try {
+      for (let i = 0; i < newSections.length; i++) {
+        const { error } = await supabase
+          .from("menu_sections")
+          .update({ display_order: i + 1 })
+          .eq("id", newSections[i].id);
+        
+        if (error) throw error;
+      }
+      
+      setSections(newSections.map((s, i) => ({ ...s, display_order: i + 1 })));
+      
+      toast({
+        title: "Ordem atualizada",
+        description: "A seção foi movida para baixo.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro ao reordenar",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -198,6 +318,68 @@ const AdminDashboard = () => {
                 </>
               )}
             </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Gerenciar Seções do Menu</CardTitle>
+            <CardDescription>
+              Controle a visibilidade e ordem das seções no site
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {sections.map((section, index) => (
+              <div
+                key={section.id}
+                className="flex items-center justify-between p-4 border rounded-lg bg-muted/20"
+              >
+                <div className="flex items-center gap-4 flex-1">
+                  <div
+                    className="w-4 h-4 rounded-full"
+                    style={{
+                      backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+                    }}
+                  />
+                  <div className="flex-1">
+                    <h3 className="font-semibold">{section.title}</h3>
+                    <p className="text-sm text-muted-foreground">{section.section_key}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor={`visible-${section.id}`} className="text-sm">
+                      {section.is_visible ? "Visível" : "Oculto"}
+                    </Label>
+                    <Switch
+                      id={`visible-${section.id}`}
+                      checked={section.is_visible}
+                      onCheckedChange={() => toggleSectionVisibility(section.id, section.is_visible)}
+                    />
+                  </div>
+
+                  <div className="flex gap-1">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => moveSectionUp(index)}
+                      disabled={index === 0}
+                    >
+                      <ChevronUp className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => moveSectionDown(index)}
+                      disabled={index === sections.length - 1}
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>

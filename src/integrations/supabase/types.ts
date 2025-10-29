@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      menu_sections: {
+        Row: {
+          color_hue: number
+          color_lightness: number
+          color_saturation: number
+          created_at: string | null
+          display_order: number
+          id: string
+          is_visible: boolean
+          section_key: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          color_hue: number
+          color_lightness: number
+          color_saturation: number
+          created_at?: string | null
+          display_order: number
+          id?: string
+          is_visible?: boolean
+          section_key: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          color_hue?: number
+          color_lightness?: number
+          color_saturation?: number
+          created_at?: string | null
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          section_key?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
