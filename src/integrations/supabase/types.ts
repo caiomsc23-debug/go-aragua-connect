@@ -14,6 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      companies: {
+        Row: {
+          cargo_responsavel: string
+          cnaes: string
+          cnpj: string
+          cpf_responsavel: string
+          created_at: string
+          data_abertura: string
+          email: string
+          endereco: string
+          id: string
+          natureza_juridica: string
+          nome_fantasia: string
+          nome_responsavel: string
+          password_hash: string
+          porte: string
+          razao_social: string
+          telefone_responsavel: string
+          updated_at: string
+        }
+        Insert: {
+          cargo_responsavel: string
+          cnaes: string
+          cnpj: string
+          cpf_responsavel: string
+          created_at?: string
+          data_abertura: string
+          email: string
+          endereco: string
+          id?: string
+          natureza_juridica: string
+          nome_fantasia: string
+          nome_responsavel: string
+          password_hash: string
+          porte: string
+          razao_social: string
+          telefone_responsavel: string
+          updated_at?: string
+        }
+        Update: {
+          cargo_responsavel?: string
+          cnaes?: string
+          cnpj?: string
+          cpf_responsavel?: string
+          created_at?: string
+          data_abertura?: string
+          email?: string
+          endereco?: string
+          id?: string
+          natureza_juridica?: string
+          nome_fantasia?: string
+          nome_responsavel?: string
+          password_hash?: string
+          porte?: string
+          razao_social?: string
+          telefone_responsavel?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       menu_sections: {
         Row: {
           color_hue: number

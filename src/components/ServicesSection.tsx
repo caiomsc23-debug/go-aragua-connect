@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Briefcase, FileText, Building2, User, FileCheck, Search, GraduationCap, Wrench, UserPlus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ interface MenuSection {
 }
 
 const ServicesSection = () => {
+  const navigate = useNavigate();
   const [sections, setSections] = useState<MenuSection[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -137,7 +139,11 @@ const ServicesSection = () => {
       </div>
 
       <div className="text-center">
-        <Button size="lg" style={getBgColorStyle(section)}>
+        <Button 
+          size="lg" 
+          style={getBgColorStyle(section)}
+          onClick={() => navigate("/company-portal")}
+        >
           ACESSE O PORTAL DAS EMPRESAS
         </Button>
       </div>
