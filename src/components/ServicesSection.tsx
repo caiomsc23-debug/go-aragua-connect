@@ -64,43 +64,50 @@ const ServicesSection = () => {
   });
 
   const renderJobSeekersSection = (section: MenuSection) => (
-    <div key={section.id} className="space-y-8">
-      <h2 className="text-3xl md:text-4xl font-bold text-center" style={getColorStyle(section)}>
-        {section.title}
-      </h2>
+    <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl" 
+         style={{ background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)` }}>
+      <div className="text-center mb-10">
+        <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3" style={getColorStyle(section)}>
+          <Search className="w-8 h-8" />
+          {section.title}
+        </h2>
+      </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-2" style={getBorderStyle(section)}>
-          <CardContent className="p-6 text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg" style={getLightBgStyle(section)}>
-              <User className="w-8 h-8" style={getColorStyle(section)} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
+          <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
+                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+              <User className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-lg font-semibold">Perfil profissional</h3>
-            <Button className="w-full" style={getBgColorStyle(section)}>
+            <h3 className="text-xl font-bold min-h-[3rem] flex items-center">Perfil profissional</h3>
+            <Button className="w-full rounded-xl shadow-md hover:shadow-lg transition-all" style={getBgColorStyle(section)}>
               CADASTRE SEU CURRÍCULO
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="border-2" style={getBorderStyle(section)}>
-          <CardContent className="p-6 text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg" style={getLightBgStyle(section)}>
-              <Briefcase className="w-8 h-8" style={getColorStyle(section)} />
+        <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
+          <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
+                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+              <Briefcase className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-lg font-semibold">Vagas de emprego</h3>
-            <Button className="w-full" style={getBgColorStyle(section)}>
+            <h3 className="text-xl font-bold min-h-[3rem] flex items-center">Vagas de emprego</h3>
+            <Button className="w-full rounded-xl shadow-md hover:shadow-lg transition-all" style={getBgColorStyle(section)}>
               ENCONTRE VAGAS
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="border-2" style={getBorderStyle(section)}>
-          <CardContent className="p-6 text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg" style={getLightBgStyle(section)}>
-              <GraduationCap className="w-8 h-8" style={getColorStyle(section)} />
+        <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
+          <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
+                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+              <GraduationCap className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-lg font-semibold">Qualificação profissional gratuita</h3>
-            <Button className="w-full" style={getBgColorStyle(section)}>
+            <h3 className="text-xl font-bold min-h-[3rem] flex items-center">Qualificação profissional gratuita</h3>
+            <Button className="w-full rounded-xl shadow-md hover:shadow-lg transition-all" style={getBgColorStyle(section)}>
               CONHEÇA OS CURSOS
             </Button>
           </CardContent>
@@ -110,84 +117,107 @@ const ServicesSection = () => {
   );
 
   const renderCompaniesSection = (section: MenuSection) => (
-    <div key={section.id} className="border-2 rounded-lg p-8 space-y-6" style={getBorderStyle(section)}>
-      <h2 className="text-3xl md:text-4xl font-bold text-center" style={getColorStyle(section)}>
-        {section.title}
-      </h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-lg flex-shrink-0" style={getLightBgStyle(section)}>
-            <Building2 className="w-8 h-8 p-1.5" style={getColorStyle(section)} />
-          </div>
-          <p className="text-sm">Possibilidade de anexo projeto na vit Agência de Emprego</p>
-        </div>
-
-        <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-lg flex-shrink-0" style={getLightBgStyle(section)}>
-            <FileCheck className="w-8 h-8 p-1.5" style={getColorStyle(section)} />
-          </div>
-          <p className="text-sm">Solução assertiva para as suas necessidades</p>
-        </div>
-
-        <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-lg flex-shrink-0" style={getLightBgStyle(section)}>
-            <FileText className="w-8 h-8 p-1.5" style={getColorStyle(section)} />
-          </div>
-          <p className="text-sm">Divulgação das vagas de emprego</p>
-        </div>
+    <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl"
+         style={{ background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)` }}>
+      <div className="text-center mb-10">
+        <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3" style={getColorStyle(section)}>
+          <Building2 className="w-8 h-8" />
+          {section.title}
+        </h2>
       </div>
+      
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="border-0 shadow-md bg-white/80 backdrop-blur">
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 shadow-md" 
+                   style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+                <Building2 className="w-7 h-7 text-white" />
+              </div>
+              <p className="text-sm font-medium">Possibilidade de anexo projeto na vit Agência de Emprego</p>
+            </CardContent>
+          </Card>
 
-      <div className="text-center">
-        <Button 
-          size="lg" 
-          style={getBgColorStyle(section)}
-          onClick={() => navigate("/company-portal")}
-        >
-          ACESSE O PORTAL DAS EMPRESAS
-        </Button>
+          <Card className="border-0 shadow-md bg-white/80 backdrop-blur">
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 shadow-md" 
+                   style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+                <FileCheck className="w-7 h-7 text-white" />
+              </div>
+              <p className="text-sm font-medium">Solução assertiva para as suas necessidades</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-md bg-white/80 backdrop-blur md:col-span-2">
+            <CardContent className="p-6 flex items-center gap-4 justify-center">
+              <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 shadow-md" 
+                   style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+                <FileText className="w-7 h-7 text-white" />
+              </div>
+              <p className="text-sm font-medium">Divulgação das vagas de emprego</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="text-center pt-4">
+          <Button 
+            size="lg" 
+            className="rounded-xl shadow-lg hover:shadow-xl transition-all text-lg px-12 py-6 h-auto"
+            style={getBgColorStyle(section)}
+            onClick={() => navigate("/company-portal")}
+          >
+            ACESSE O PORTAL DAS EMPRESAS
+          </Button>
+        </div>
       </div>
     </div>
   );
 
   const renderAutonomousSection = (section: MenuSection) => (
-    <div key={section.id} className="space-y-8">
-      <h2 className="text-3xl md:text-4xl font-bold text-center" style={getColorStyle(section)}>
-        {section.title}
-      </h2>
+    <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl"
+         style={{ background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)` }}>
+      <div className="text-center mb-10">
+        <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3" style={getColorStyle(section)}>
+          <Wrench className="w-8 h-8" />
+          {section.title}
+        </h2>
+      </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-2" style={getBorderStyle(section)}>
-          <CardContent className="p-6 text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg" style={getLightBgStyle(section)}>
-              <Wrench className="w-8 h-8" style={getColorStyle(section)} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
+          <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
+                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+              <Wrench className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-lg font-semibold">Vincule para seus serviços</h3>
-            <Button className="w-full" style={getBgColorStyle(section)}>
+            <h3 className="text-xl font-bold min-h-[3rem] flex items-center">Vincule para seus serviços</h3>
+            <Button className="w-full rounded-xl shadow-md hover:shadow-lg transition-all" style={getBgColorStyle(section)}>
               OFEREÇA SEUS SERVIÇOS
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="border-2" style={getBorderStyle(section)}>
-          <CardContent className="p-6 text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg" style={getLightBgStyle(section)}>
-              <Search className="w-8 h-8" style={getColorStyle(section)} />
+        <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
+          <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
+                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+              <Search className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-lg font-semibold">Oportunidades de Serviços</h3>
-            <Button className="w-full" style={getBgColorStyle(section)}>
+            <h3 className="text-xl font-bold min-h-[3rem] flex items-center">Oportunidades de Serviços</h3>
+            <Button className="w-full rounded-xl shadow-md hover:shadow-lg transition-all" style={getBgColorStyle(section)}>
               BUSQUE OPORTUNIDADES
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="border-2" style={getBorderStyle(section)}>
-          <CardContent className="p-6 text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg" style={getLightBgStyle(section)}>
-              <GraduationCap className="w-8 h-8" style={getColorStyle(section)} />
+        <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
+          <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
+                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+              <GraduationCap className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-lg font-semibold">Título de Capacitação Profissional</h3>
-            <Button className="w-full" style={getBgColorStyle(section)}>
+            <h3 className="text-xl font-bold min-h-[3rem] flex items-center">Título de Capacitação Profissional</h3>
+            <Button className="w-full rounded-xl shadow-md hover:shadow-lg transition-all" style={getBgColorStyle(section)}>
               CONHEÇA OS CURSOS
             </Button>
           </CardContent>
@@ -197,35 +227,41 @@ const ServicesSection = () => {
   );
 
   const renderServiceSeekersSection = (section: MenuSection) => (
-    <div key={section.id} className="border-2 rounded-lg p-8 space-y-6" style={getBorderStyle(section)}>
-      <h2 className="text-3xl md:text-4xl font-bold text-center" style={getColorStyle(section)}>
-        {section.title}
-      </h2>
+    <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl"
+         style={{ background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)` }}>
+      <div className="text-center mb-10">
+        <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3" style={getColorStyle(section)}>
+          <UserPlus className="w-8 h-8" />
+          {section.title}
+        </h2>
+      </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-lg flex-shrink-0" style={getLightBgStyle(section)}>
-            <UserPlus className="w-12 h-12 p-2.5" style={getColorStyle(section)} />
-          </div>
-          <div className="space-y-3 flex-1">
-            <p className="text-sm font-medium">Conheça os profissionais da GO e contrate seus serviços</p>
-            <Button className="w-full" style={getBgColorStyle(section)}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
+          <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
+                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+              <UserPlus className="w-10 h-10 text-white" />
+            </div>
+            <h3 className="text-lg font-bold min-h-[3rem] flex items-center">Conheça os profissionais da GO e contrate seus serviços</h3>
+            <Button className="w-full rounded-xl shadow-md hover:shadow-lg transition-all" style={getBgColorStyle(section)}>
               BUSQUE PROFISSIONAIS
             </Button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-lg flex-shrink-0" style={getLightBgStyle(section)}>
-            <FileText className="w-12 h-12 p-2.5" style={getColorStyle(section)} />
-          </div>
-          <div className="space-y-3 flex-1">
-            <p className="text-sm font-medium">Receba propostas de serviços</p>
-            <Button className="w-full" style={getBgColorStyle(section)}>
+        <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
+          <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
+                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+              <FileText className="w-10 h-10 text-white" />
+            </div>
+            <h3 className="text-lg font-bold min-h-[3rem] flex items-center">Receba propostas de serviços</h3>
+            <Button className="w-full rounded-xl shadow-md hover:shadow-lg transition-all" style={getBgColorStyle(section)}>
               RECEBA PROPOSTAS
             </Button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
