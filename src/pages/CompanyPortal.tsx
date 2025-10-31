@@ -73,8 +73,15 @@ const CompanyPortal = () => {
 
       if (error) throw error;
 
+      // Store company session after successful registration
+      localStorage.setItem("company_session", JSON.stringify({
+        id: (await supabase.from("companies").select("id").eq("email", companyData.email).single()).data?.id,
+        email: companyData.email,
+        nome_fantasia: companyData.nome_fantasia,
+      }));
+
       toast.success("Cadastro realizado com sucesso!");
-      navigate("/company-success");
+      navigate("/company-dashboard");
     } catch (error: any) {
       console.error("Error registering company:", error);
       toast.error(error.message || "Erro ao cadastrar empresa");

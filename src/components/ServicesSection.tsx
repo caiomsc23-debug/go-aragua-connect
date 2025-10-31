@@ -242,7 +242,7 @@ const ServicesSection = () => {
             size="lg" 
             className="rounded-xl shadow-lg hover:shadow-xl transition-all text-lg px-12 py-6 h-auto"
             style={getBgColorStyle(section)}
-            onClick={() => navigate("/company-portal")}
+            onClick={() => navigate("/company-login")}
           >
             ACESSE O PORTAL DAS EMPRESAS
           </Button>

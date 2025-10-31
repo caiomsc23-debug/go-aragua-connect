@@ -8,7 +8,9 @@ import Index from "./pages/Index";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminSetup from "./pages/AdminSetup";
+import CompanyLogin from "./pages/CompanyLogin";
 import CompanyPortal from "./pages/CompanyPortal";
+import CompanyDashboard from "./pages/CompanyDashboard";
 import CompanySuccess from "./pages/CompanySuccess";
 import NotFound from "./pages/NotFound";
 
@@ -23,7 +25,9 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/company-login" element={<CompanyLogin />} />
             <Route path="/company-portal" element={<CompanyPortal />} />
+            <Route path="/company-dashboard" element={<CompanyDashboard />} />
             <Route path="/company-success" element={<CompanySuccess />} />
             <Route path="/admin/setup" element={<AdminSetup />} />
             <Route path="/admin/login" element={<AdminLogin />} />
