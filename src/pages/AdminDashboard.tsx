@@ -8,15 +8,25 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, LogOut, Save, Eye, EyeOff, ChevronUp, ChevronDown } from "lucide-react";
+import { Loader2, LogOut, Save } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
-import { Switch } from "@/components/ui/switch";
+import SectionEditor from "@/components/admin/SectionEditor";
 
 interface ContentData {
   hero_title: string;
   hero_description: string;
   hero_button_text: string;
   hero_background_image: string;
+}
+
+interface SectionCard {
+  id: string;
+  title: string;
+  buttonText: string;
+  buttonAction: string;
+  icon: string;
+  is_visible: boolean;
+  description?: string;
 }
 
 interface MenuSection {
@@ -28,6 +38,7 @@ interface MenuSection {
   color_hue: number;
   color_saturation: number;
   color_lightness: number;
+  section_config: SectionCard[];
 }
 
 const AdminDashboard = () => {
@@ -92,36 +103,17 @@ const AdminDashboard = () => {
         .order("display_order");
 
       if (error) throw error;
-      if (data) setSections(data);
+      // Cast section_config from Json to SectionCard[]
+      if (data) {
+        const sectionsWithConfig = data.map(section => ({
+          ...section,
+          section_config: (section.section_config as any) || []
+        }));
+        setSections(sectionsWithConfig as MenuSection[]);
+      }
     } catch (error: any) {
       toast({
         title: "Erro ao carregar seções",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const toggleSectionVisibility = async (sectionId: string, currentVisibility: boolean) => {
-    try {
-      const { error } = await supabase
-        .from("menu_sections")
-        .update({ is_visible: !currentVisibility })
-        .eq("id", sectionId);
-
-      if (error) throw error;
-
-      setSections(sections.map(s => 
-        s.id === sectionId ? { ...s, is_visible: !currentVisibility } : s
-      ));
-
-      toast({
-        title: "Seção atualizada",
-        description: "A visibilidade da seção foi alterada.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Erro ao atualizar",
         description: error.message,
         variant: "destructive",
       });
@@ -323,62 +315,22 @@ const AdminDashboard = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Gerenciar Seções do Menu</CardTitle>
+            <CardTitle>Gerenciar Seções e Conteúdo do Site</CardTitle>
             <CardDescription>
-              Controle a visibilidade e ordem das seções no site
+              Personalize cores, textos, botões e visibilidade de cada seção
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             {sections.map((section, index) => (
-              <div
+              <SectionEditor
                 key={section.id}
-                className="flex items-center justify-between p-4 border rounded-lg bg-muted/20"
-              >
-                <div className="flex items-center gap-4 flex-1">
-                  <div
-                    className="w-4 h-4 rounded-full"
-                    style={{
-                      backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
-                    }}
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold">{section.title}</h3>
-                    <p className="text-sm text-muted-foreground">{section.section_key}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor={`visible-${section.id}`} className="text-sm">
-                      {section.is_visible ? "Visível" : "Oculto"}
-                    </Label>
-                    <Switch
-                      id={`visible-${section.id}`}
-                      checked={section.is_visible}
-                      onCheckedChange={() => toggleSectionVisibility(section.id, section.is_visible)}
-                    />
-                  </div>
-
-                  <div className="flex gap-1">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => moveSectionUp(index)}
-                      disabled={index === 0}
-                    >
-                      <ChevronUp className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => moveSectionDown(index)}
-                      disabled={index === sections.length - 1}
-                    >
-                      <ChevronDown className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
+                section={section}
+                onUpdate={loadSections}
+                onMoveUp={() => moveSectionUp(index)}
+                onMoveDown={() => moveSectionDown(index)}
+                canMoveUp={index > 0}
+                canMoveDown={index < sections.length - 1}
+              />
             ))}
           </CardContent>
         </Card>

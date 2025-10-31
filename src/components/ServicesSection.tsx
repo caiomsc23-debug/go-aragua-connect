@@ -1,9 +1,20 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as Icons from "lucide-react";
 import { Briefcase, FileText, Building2, User, FileCheck, Search, GraduationCap, Wrench, UserPlus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+
+interface SectionCard {
+  id: string;
+  title: string;
+  buttonText: string;
+  buttonAction: string;
+  icon: string;
+  is_visible: boolean;
+  description?: string;
+}
 
 interface MenuSection {
   id: string;
@@ -14,6 +25,7 @@ interface MenuSection {
   color_hue: number;
   color_saturation: number;
   color_lightness: number;
+  section_config: SectionCard[];
 }
 
 const ServicesSection = () => {
@@ -34,7 +46,12 @@ const ServicesSection = () => {
         .order("display_order");
 
       if (error) throw error;
-      setSections(data || []);
+      // Cast section_config from Json to SectionCard[]
+      const sectionsWithConfig = (data || []).map(section => ({
+        ...section,
+        section_config: (section.section_config as any) || []
+      }));
+      setSections(sectionsWithConfig as MenuSection[]);
     } catch (error) {
       console.error("Error loading sections:", error);
     } finally {
@@ -62,6 +79,67 @@ const ServicesSection = () => {
   const getBorderStyle = (section: MenuSection) => ({
     borderColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
   });
+
+  const getIconComponent = (iconName: string) => {
+    const Icon = (Icons as any)[iconName] || Icons.Circle;
+    return Icon;
+  };
+
+  const handleButtonClick = (action: string) => {
+    if (action.startsWith('http')) {
+      window.open(action, '_blank');
+    } else if (action.startsWith('/')) {
+      navigate(action);
+    }
+  };
+
+  const renderGenericSection = (section: MenuSection) => {
+    const cards = (section.section_config || []).filter(card => card.is_visible);
+    
+    if (cards.length === 0) return null;
+
+    const TitleIcon = getIconComponent(section.section_config?.[0]?.icon || 'Circle');
+
+    return (
+      <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl" 
+           style={{ background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)` }}>
+        <div className="text-center mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3" style={getColorStyle(section)}>
+            <TitleIcon className="w-8 h-8" />
+            {section.title}
+          </h2>
+        </div>
+        
+        <div className={`grid grid-cols-1 gap-6 max-w-5xl mx-auto ${cards.length === 2 ? 'md:grid-cols-2 max-w-4xl' : 'md:grid-cols-3'}`}>
+          {cards.map((card) => {
+            const CardIcon = getIconComponent(card.icon);
+            
+            return (
+              <Card key={card.id} className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
+                <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
+                  <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
+                       style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+                    <CardIcon className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold min-h-[3rem] flex items-center">{card.title}</h3>
+                  {card.description && (
+                    <p className="text-sm text-muted-foreground">{card.description}</p>
+                  )}
+                  <Button 
+                    className="w-full rounded-xl shadow-md hover:shadow-lg transition-all" 
+                    style={getBgColorStyle(section)}
+                    onClick={() => handleButtonClick(card.buttonAction)}
+                  >
+                    {card.buttonText}
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   const renderJobSeekersSection = (section: MenuSection) => (
     <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl" 
@@ -270,6 +348,12 @@ const ServicesSection = () => {
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4 space-y-16">
         {sections.map((section) => {
+          // Use generic renderer if section has config, otherwise fallback to hardcoded
+          if (section.section_config && section.section_config.length > 0) {
+            return renderGenericSection(section);
+          }
+          
+          // Fallback to old hardcoded sections for backward compatibility
           switch (section.section_key) {
             case 'job_seekers':
               return renderJobSeekersSection(section);

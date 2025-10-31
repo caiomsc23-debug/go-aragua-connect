@@ -83,6 +83,7 @@ export type Database = {
           display_order: number
           id: string
           is_visible: boolean
+          section_config: Json | null
           section_key: string
           title: string
           updated_at: string | null
@@ -95,6 +96,7 @@ export type Database = {
           display_order: number
           id?: string
           is_visible?: boolean
+          section_config?: Json | null
           section_key: string
           title: string
           updated_at?: string | null
@@ -107,6 +109,7 @@ export type Database = {
           display_order?: number
           id?: string
           is_visible?: boolean
+          section_config?: Json | null
           section_key?: string
           title?: string
           updated_at?: string | null
