@@ -12,6 +12,10 @@ import CompanyLogin from "./pages/CompanyLogin";
 import CompanyPortal from "./pages/CompanyPortal";
 import CompanyDashboard from "./pages/CompanyDashboard";
 import CompanySuccess from "./pages/CompanySuccess";
+import ManageJobs from "./pages/ManageJobs";
+import NewJob from "./pages/NewJob";
+import JobsList from "./pages/JobsList";
+import JobDetails from "./pages/JobDetails";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +32,10 @@ const App = () => (
             <Route path="/company-login" element={<CompanyLogin />} />
             <Route path="/company-portal" element={<CompanyPortal />} />
             <Route path="/company-dashboard" element={<CompanyDashboard />} />
+            <Route path="/company-dashboard/manage-jobs" element={<ManageJobs />} />
+            <Route path="/company-dashboard/new-job" element={<NewJob />} />
+            <Route path="/company-dashboard/jobs-list" element={<JobsList />} />
+            <Route path="/company-dashboard/job/:id" element={<JobDetails />} />
             <Route path="/company-success" element={<CompanySuccess />} />
             <Route path="/admin/setup" element={<AdminSetup />} />
             <Route path="/admin/login" element={<AdminLogin />} />

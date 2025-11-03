@@ -74,6 +74,100 @@ export type Database = {
         }
         Relationships: []
       }
+      company_notifications: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_notifications_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jobs: {
+        Row: {
+          beneficios: string | null
+          company_id: string
+          created_at: string
+          descricao: string | null
+          escolaridade_exigida: string | null
+          horario: string | null
+          id: string
+          is_active: boolean
+          modelo_contratacao: string | null
+          nome_vaga: string
+          requisitos: string | null
+          salario: string | null
+          tempo_experiencia: string | null
+          updated_at: string
+          vagas_disponiveis: number
+        }
+        Insert: {
+          beneficios?: string | null
+          company_id: string
+          created_at?: string
+          descricao?: string | null
+          escolaridade_exigida?: string | null
+          horario?: string | null
+          id?: string
+          is_active?: boolean
+          modelo_contratacao?: string | null
+          nome_vaga: string
+          requisitos?: string | null
+          salario?: string | null
+          tempo_experiencia?: string | null
+          updated_at?: string
+          vagas_disponiveis?: number
+        }
+        Update: {
+          beneficios?: string | null
+          company_id?: string
+          created_at?: string
+          descricao?: string | null
+          escolaridade_exigida?: string | null
+          horario?: string | null
+          id?: string
+          is_active?: boolean
+          modelo_contratacao?: string | null
+          nome_vaga?: string
+          requisitos?: string | null
+          salario?: string | null
+          tempo_experiencia?: string | null
+          updated_at?: string
+          vagas_disponiveis?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       menu_sections: {
         Row: {
           color_hue: number
