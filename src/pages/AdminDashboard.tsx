@@ -86,12 +86,33 @@ const AdminDashboard = () => {
       ];
 
       for (const update of updates) {
-        const { error } = await supabase
+        // Verificar se o registro existe
+        const { data: existing } = await supabase
           .from("site_content")
-          .update({ value: update.value, updated_by: user?.id })
-          .eq("key", update.key);
+          .select("id")
+          .eq("key", update.key)
+          .maybeSingle();
 
-        if (error) throw error;
+        if (existing) {
+          // Atualizar registro existente
+          const { error } = await supabase
+            .from("site_content")
+            .update({ value: update.value, updated_by: user?.id })
+            .eq("key", update.key);
+
+          if (error) throw error;
+        } else {
+          // Inserir novo registro
+          const { error } = await supabase
+            .from("site_content")
+            .insert({ 
+              key: update.key, 
+              value: update.value, 
+              updated_by: user?.id 
+            });
+
+          if (error) throw error;
+        }
       }
 
       toast({
