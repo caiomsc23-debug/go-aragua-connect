@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, LogOut, Save } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
-import SectionEditor from "@/components/admin/SectionEditor";
 import { SectionManagerButtons } from "@/components/admin/SectionManagerButtons";
 
 interface ContentData {
@@ -18,28 +17,6 @@ interface ContentData {
   hero_description: string;
   hero_button_text: string;
   hero_background_image: string;
-}
-
-interface SectionCard {
-  id: string;
-  title: string;
-  buttonText: string;
-  buttonAction: string;
-  icon: string;
-  is_visible: boolean;
-  description?: string;
-}
-
-interface MenuSection {
-  id: string;
-  section_key: string;
-  title: string;
-  is_visible: boolean;
-  display_order: number;
-  color_hue: number;
-  color_saturation: number;
-  color_lightness: number;
-  section_config: SectionCard[];
 }
 
 const AdminDashboard = () => {
@@ -54,7 +31,6 @@ const AdminDashboard = () => {
     hero_button_text: "",
     hero_background_image: "",
   });
-  const [sections, setSections] = useState<MenuSection[]>([]);
 
   useEffect(() => {
     if (!authLoading && (!user || !isAdmin)) {
@@ -65,7 +41,6 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (user && isAdmin) {
       loadContent();
-      loadSections();
     }
   }, [user, isAdmin]);
 
@@ -96,92 +71,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const loadSections = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("menu_sections")
-        .select("*")
-        .order("display_order");
-
-      if (error) throw error;
-      // Cast section_config from Json to SectionCard[]
-      if (data) {
-        const sectionsWithConfig = data.map(section => ({
-          ...section,
-          section_config: (section.section_config as any) || []
-        }));
-        setSections(sectionsWithConfig as MenuSection[]);
-      }
-    } catch (error: any) {
-      toast({
-        title: "Erro ao carregar seções",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const moveSectionUp = async (index: number) => {
-    if (index === 0) return;
-    
-    const newSections = [...sections];
-    [newSections[index - 1], newSections[index]] = [newSections[index], newSections[index - 1]];
-    
-    try {
-      for (let i = 0; i < newSections.length; i++) {
-        const { error } = await supabase
-          .from("menu_sections")
-          .update({ display_order: i + 1 })
-          .eq("id", newSections[i].id);
-        
-        if (error) throw error;
-      }
-      
-      setSections(newSections.map((s, i) => ({ ...s, display_order: i + 1 })));
-      
-      toast({
-        title: "Ordem atualizada",
-        description: "A seção foi movida para cima.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Erro ao reordenar",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const moveSectionDown = async (index: number) => {
-    if (index === sections.length - 1) return;
-    
-    const newSections = [...sections];
-    [newSections[index], newSections[index + 1]] = [newSections[index + 1], newSections[index]];
-    
-    try {
-      for (let i = 0; i < newSections.length; i++) {
-        const { error } = await supabase
-          .from("menu_sections")
-          .update({ display_order: i + 1 })
-          .eq("id", newSections[i].id);
-        
-        if (error) throw error;
-      }
-      
-      setSections(newSections.map((s, i) => ({ ...s, display_order: i + 1 })));
-      
-      toast({
-        title: "Ordem atualizada",
-        description: "A seção foi movida para baixo.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Erro ao reordenar",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -321,25 +210,8 @@ const AdminDashboard = () => {
               Personalize cores, textos, botões e visibilidade de cada seção
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-8">
+          <CardContent>
             <SectionManagerButtons />
-            
-            <div className="pt-6 border-t">
-              <h3 className="text-lg font-semibold mb-4">Gerenciamento Avançado de Seções</h3>
-              <div className="space-y-6">
-                {sections.map((section, index) => (
-                  <SectionEditor
-                    key={section.id}
-                    section={section}
-                    onUpdate={loadSections}
-                    onMoveUp={() => moveSectionUp(index)}
-                    onMoveDown={() => moveSectionDown(index)}
-                    canMoveUp={index > 0}
-                    canMoveDown={index < sections.length - 1}
-                  />
-                ))}
-              </div>
-            </div>
           </CardContent>
         </Card>
       </div>
