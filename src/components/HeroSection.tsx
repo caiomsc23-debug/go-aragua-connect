@@ -16,6 +16,27 @@ const HeroSection = () => {
 
   useEffect(() => {
     loadContent();
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel('hero_content_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'site_content',
+          filter: 'key=in.(hero_title,hero_description,hero_button_text,hero_background_image)'
+        },
+        () => {
+          loadContent();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const loadContent = async () => {

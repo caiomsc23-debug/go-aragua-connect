@@ -35,6 +35,26 @@ const ServicesSection = () => {
 
   useEffect(() => {
     loadSections();
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel('menu_sections_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'menu_sections'
+        },
+        () => {
+          loadSections();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const loadSections = async () => {
