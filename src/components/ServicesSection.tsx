@@ -5,7 +5,6 @@ import { Briefcase, FileText, Building2, User, FileCheck, Search, GraduationCap,
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-
 interface SectionCard {
   id: string;
   title: string;
@@ -15,7 +14,6 @@ interface SectionCard {
   is_visible: boolean;
   description?: string;
 }
-
 interface MenuSection {
   id: string;
   section_key: string;
@@ -27,49 +25,36 @@ interface MenuSection {
   color_lightness: number;
   section_config: SectionCard[];
 }
-
 const ServicesSection = () => {
   const navigate = useNavigate();
   const [sections, setSections] = useState<MenuSection[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     loadSections();
 
     // Subscribe to real-time changes
-    const channel = supabase
-      .channel('menu_sections_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'menu_sections'
-        },
-        () => {
-          loadSections();
-        }
-      )
-      .subscribe();
-
+    const channel = supabase.channel('menu_sections_changes').on('postgres_changes', {
+      event: '*',
+      schema: 'public',
+      table: 'menu_sections'
+    }, () => {
+      loadSections();
+    }).subscribe();
     return () => {
       supabase.removeChannel(channel);
     };
   }, []);
-
   const loadSections = async () => {
     try {
-      const { data, error } = await supabase
-        .from("menu_sections")
-        .select("*")
-        .eq("is_visible", true)
-        .order("display_order");
-
+      const {
+        data,
+        error
+      } = await supabase.from("menu_sections").select("*").eq("is_visible", true).order("display_order");
       if (error) throw error;
       // Cast section_config from Json to SectionCard[]
       const sectionsWithConfig = (data || []).map(section => ({
         ...section,
-        section_config: (section.section_config as any) || []
+        section_config: section.section_config as any || []
       }));
       setSections(sectionsWithConfig as MenuSection[]);
     } catch (error) {
@@ -78,33 +63,26 @@ const ServicesSection = () => {
       setLoading(false);
     }
   };
-
   if (loading) {
     return null;
   }
-
   const getColorStyle = (section: MenuSection) => ({
     color: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
   });
-
   const getBgColorStyle = (section: MenuSection) => ({
     backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`,
     color: 'white'
   });
-
   const getLightBgStyle = (section: MenuSection) => ({
     backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, 90%)`
   });
-
   const getBorderStyle = (section: MenuSection) => ({
     borderColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
   });
-
   const getIconComponent = (iconName: string) => {
     const Icon = (Icons as any)[iconName] || Icons.Circle;
     return Icon;
   };
-
   const handleButtonClick = (action: string) => {
     if (action.startsWith('http')) {
       window.open(action, '_blank');
@@ -112,17 +90,13 @@ const ServicesSection = () => {
       navigate(action);
     }
   };
-
   const renderGenericSection = (section: MenuSection) => {
     const cards = (section.section_config || []).filter(card => card.is_visible);
-    
     if (cards.length === 0) return null;
-
     const TitleIcon = getIconComponent(section.section_config?.[0]?.icon || 'Circle');
-
-    return (
-      <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl" 
-           style={{ background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)` }}>
+    return <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl" style={{
+      background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)`
+    }}>
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3" style={getColorStyle(section)}>
             <TitleIcon className="w-8 h-8" />
@@ -131,39 +105,29 @@ const ServicesSection = () => {
         </div>
         
         <div className={`grid grid-cols-1 gap-6 max-w-5xl mx-auto ${cards.length === 2 ? 'md:grid-cols-2 max-w-4xl' : 'md:grid-cols-3'}`}>
-          {cards.map((card) => {
-            const CardIcon = getIconComponent(card.icon);
-            
-            return (
-              <Card key={card.id} className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
+          {cards.map(card => {
+          const CardIcon = getIconComponent(card.icon);
+          return <Card key={card.id} className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
                 <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
-                  <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
-                       style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+                  <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" style={{
+                backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+              }}>
                     <CardIcon className="w-10 h-10 text-white" />
                   </div>
                   <h3 className="text-xl font-bold min-h-[3rem] flex items-center">{card.title}</h3>
-                  {card.description && (
-                    <p className="text-sm text-muted-foreground">{card.description}</p>
-                  )}
-                  <Button 
-                    className="w-full rounded-xl shadow-md hover:shadow-lg transition-all" 
-                    style={getBgColorStyle(section)}
-                    onClick={() => handleButtonClick(card.buttonAction)}
-                  >
+                  {card.description && <p className="text-sm text-muted-foreground">{card.description}</p>}
+                  <Button className="w-full rounded-xl shadow-md hover:shadow-lg transition-all" style={getBgColorStyle(section)} onClick={() => handleButtonClick(card.buttonAction)}>
                     {card.buttonText}
                   </Button>
                 </CardContent>
-              </Card>
-            );
-          })}
+              </Card>;
+        })}
         </div>
-      </div>
-    );
+      </div>;
   };
-
-  const renderJobSeekersSection = (section: MenuSection) => (
-    <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl" 
-         style={{ background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)` }}>
+  const renderJobSeekersSection = (section: MenuSection) => <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl" style={{
+    background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)`
+  }}>
       <div className="text-center mb-10">
         <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3" style={getColorStyle(section)}>
           <Search className="w-8 h-8" />
@@ -174,8 +138,9 @@ const ServicesSection = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
         <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
           <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
-                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" style={{
+            backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+          }}>
               <User className="w-10 h-10 text-white" />
             </div>
             <h3 className="text-xl font-bold min-h-[3rem] flex items-center">Perfil profissional</h3>
@@ -187,8 +152,9 @@ const ServicesSection = () => {
 
         <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
           <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
-                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" style={{
+            backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+          }}>
               <Briefcase className="w-10 h-10 text-white" />
             </div>
             <h3 className="text-xl font-bold min-h-[3rem] flex items-center">Vagas de emprego</h3>
@@ -200,8 +166,9 @@ const ServicesSection = () => {
 
         <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
           <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
-                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" style={{
+            backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+          }}>
               <GraduationCap className="w-10 h-10 text-white" />
             </div>
             <h3 className="text-xl font-bold min-h-[3rem] flex items-center">Qualificação profissional gratuita</h3>
@@ -211,12 +178,10 @@ const ServicesSection = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
-
-  const renderCompaniesSection = (section: MenuSection) => (
-    <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl"
-         style={{ background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)` }}>
+    </div>;
+  const renderCompaniesSection = (section: MenuSection) => <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl" style={{
+    background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)`
+  }}>
       <div className="text-center mb-10">
         <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3" style={getColorStyle(section)}>
           <Building2 className="w-8 h-8" />
@@ -228,18 +193,20 @@ const ServicesSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="border-0 shadow-md bg-white/80 backdrop-blur">
             <CardContent className="p-6 flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 shadow-md" 
-                   style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+              <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 shadow-md" style={{
+              backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+            }}>
                 <Building2 className="w-7 h-7 text-white" />
               </div>
-              <p className="text-sm font-medium">Possibilidade de anexo projeto na vit Agência de Emprego</p>
+              <p className="text-sm font-medium">Possibilidade de anexo projeto na via Agência de Emprego</p>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-md bg-white/80 backdrop-blur">
             <CardContent className="p-6 flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 shadow-md" 
-                   style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+              <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 shadow-md" style={{
+              backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+            }}>
                 <FileCheck className="w-7 h-7 text-white" />
               </div>
               <p className="text-sm font-medium">Solução assertiva para as suas necessidades</p>
@@ -248,8 +215,9 @@ const ServicesSection = () => {
 
           <Card className="border-0 shadow-md bg-white/80 backdrop-blur md:col-span-2">
             <CardContent className="p-6 flex items-center gap-4 justify-center">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 shadow-md" 
-                   style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+              <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 shadow-md" style={{
+              backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+            }}>
                 <FileText className="w-7 h-7 text-white" />
               </div>
               <p className="text-sm font-medium">Divulgação das vagas de emprego</p>
@@ -258,22 +226,15 @@ const ServicesSection = () => {
         </div>
 
         <div className="text-center pt-4">
-          <Button 
-            size="lg" 
-            className="rounded-xl shadow-lg hover:shadow-xl transition-all text-lg px-12 py-6 h-auto"
-            style={getBgColorStyle(section)}
-            onClick={() => navigate("/company-login")}
-          >
+          <Button size="lg" className="rounded-xl shadow-lg hover:shadow-xl transition-all text-lg px-12 py-6 h-auto" style={getBgColorStyle(section)} onClick={() => navigate("/company-login")}>
             ACESSE O PORTAL DAS EMPRESAS
           </Button>
         </div>
       </div>
-    </div>
-  );
-
-  const renderAutonomousSection = (section: MenuSection) => (
-    <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl"
-         style={{ background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)` }}>
+    </div>;
+  const renderAutonomousSection = (section: MenuSection) => <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl" style={{
+    background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)`
+  }}>
       <div className="text-center mb-10">
         <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3" style={getColorStyle(section)}>
           <Wrench className="w-8 h-8" />
@@ -284,8 +245,9 @@ const ServicesSection = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
         <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
           <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
-                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" style={{
+            backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+          }}>
               <Wrench className="w-10 h-10 text-white" />
             </div>
             <h3 className="text-xl font-bold min-h-[3rem] flex items-center">Vincule para seus serviços</h3>
@@ -297,8 +259,9 @@ const ServicesSection = () => {
 
         <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
           <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
-                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" style={{
+            backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+          }}>
               <Search className="w-10 h-10 text-white" />
             </div>
             <h3 className="text-xl font-bold min-h-[3rem] flex items-center">Oportunidades de Serviços</h3>
@@ -310,8 +273,9 @@ const ServicesSection = () => {
 
         <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
           <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
-                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" style={{
+            backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+          }}>
               <GraduationCap className="w-10 h-10 text-white" />
             </div>
             <h3 className="text-xl font-bold min-h-[3rem] flex items-center">Título de Capacitação Profissional</h3>
@@ -321,12 +285,10 @@ const ServicesSection = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
-
-  const renderServiceSeekersSection = (section: MenuSection) => (
-    <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl"
-         style={{ background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)` }}>
+    </div>;
+  const renderServiceSeekersSection = (section: MenuSection) => <div key={section.id} className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-lg transition-all duration-300 hover:shadow-xl" style={{
+    background: `linear-gradient(135deg, hsl(${section.color_hue}, ${section.color_saturation}%, 95%) 0%, hsl(${section.color_hue}, ${section.color_saturation}%, 98%) 100%)`
+  }}>
       <div className="text-center mb-10">
         <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3" style={getColorStyle(section)}>
           <UserPlus className="w-8 h-8" />
@@ -337,8 +299,9 @@ const ServicesSection = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
         <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
           <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
-                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" style={{
+            backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+          }}>
               <UserPlus className="w-10 h-10 text-white" />
             </div>
             <h3 className="text-lg font-bold min-h-[3rem] flex items-center">Conheça os profissionais da GO e contrate seus serviços</h3>
@@ -350,8 +313,9 @@ const ServicesSection = () => {
 
         <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur">
           <CardContent className="p-8 text-center space-y-6 flex flex-col items-center">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" 
-                 style={{ backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)` }}>
+            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-md" style={{
+            backgroundColor: `hsl(${section.color_hue}, ${section.color_saturation}%, ${section.color_lightness}%)`
+          }}>
               <FileText className="w-10 h-10 text-white" />
             </div>
             <h3 className="text-lg font-bold min-h-[3rem] flex items-center">Receba propostas de serviços</h3>
@@ -361,35 +325,30 @@ const ServicesSection = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
-
-  return (
-    <section className="py-20 bg-background">
+    </div>;
+  return <section className="py-20 bg-background">
       <div className="container mx-auto px-4 space-y-16">
-        {sections.map((section) => {
-          // Use generic renderer if section has config, otherwise fallback to hardcoded
-          if (section.section_config && section.section_config.length > 0) {
-            return renderGenericSection(section);
-          }
-          
-          // Fallback to old hardcoded sections for backward compatibility
-          switch (section.section_key) {
-            case 'job_seekers':
-              return renderJobSeekersSection(section);
-            case 'companies':
-              return renderCompaniesSection(section);
-            case 'autonomous':
-              return renderAutonomousSection(section);
-            case 'service_seekers':
-              return renderServiceSeekersSection(section);
-            default:
-              return null;
-          }
-        })}
-      </div>
-    </section>
-  );
-};
+        {sections.map(section => {
+        // Use generic renderer if section has config, otherwise fallback to hardcoded
+        if (section.section_config && section.section_config.length > 0) {
+          return renderGenericSection(section);
+        }
 
+        // Fallback to old hardcoded sections for backward compatibility
+        switch (section.section_key) {
+          case 'job_seekers':
+            return renderJobSeekersSection(section);
+          case 'companies':
+            return renderCompaniesSection(section);
+          case 'autonomous':
+            return renderAutonomousSection(section);
+          case 'service_seekers':
+            return renderServiceSeekersSection(section);
+          default:
+            return null;
+        }
+      })}
+      </div>
+    </section>;
+};
 export default ServicesSection;
