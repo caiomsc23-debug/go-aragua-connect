@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2, LogOut, Save } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
 import SectionEditor from "@/components/admin/SectionEditor";
+import { SectionManagerButtons } from "@/components/admin/SectionManagerButtons";
 
 interface ContentData {
   hero_title: string;
@@ -320,18 +321,25 @@ const AdminDashboard = () => {
               Personalize cores, textos, botões e visibilidade de cada seção
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {sections.map((section, index) => (
-              <SectionEditor
-                key={section.id}
-                section={section}
-                onUpdate={loadSections}
-                onMoveUp={() => moveSectionUp(index)}
-                onMoveDown={() => moveSectionDown(index)}
-                canMoveUp={index > 0}
-                canMoveDown={index < sections.length - 1}
-              />
-            ))}
+          <CardContent className="space-y-8">
+            <SectionManagerButtons />
+            
+            <div className="pt-6 border-t">
+              <h3 className="text-lg font-semibold mb-4">Gerenciamento Avançado de Seções</h3>
+              <div className="space-y-6">
+                {sections.map((section, index) => (
+                  <SectionEditor
+                    key={section.id}
+                    section={section}
+                    onUpdate={loadSections}
+                    onMoveUp={() => moveSectionUp(index)}
+                    onMoveDown={() => moveSectionDown(index)}
+                    canMoveUp={index > 0}
+                    canMoveDown={index < sections.length - 1}
+                  />
+                ))}
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
