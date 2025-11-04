@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import logoImage from "@/assets/logo-go-araguaina.png";
+import { useSiteLogo } from "@/hooks/useSiteLogo";
 
 interface CompanySession {
   id: string;
@@ -13,6 +13,7 @@ interface CompanySession {
 
 const ManageJobs = () => {
   const navigate = useNavigate();
+  const { logo } = useSiteLogo();
   const [company, setCompany] = useState<CompanySession | null>(null);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const ManageJobs = () => {
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         {/* Header with Logo */}
         <div className="mb-8 text-center">
-          <img src={logoImage} alt="Conecta Araguaína" className="h-16 mx-auto mb-6" />
+          <img src={logo} alt="Conecta Araguaína" className="h-16 mx-auto mb-6" />
         </div>
 
         {/* Main Card */}

@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
 import prefeituraLogo from "@/assets/prefeitura-araguaina-logo.png";
-import goAraguainaLogo from "@/assets/logo-go-araguaina.png";
+import { useSiteLogo } from "@/hooks/useSiteLogo";
 
 const Header = () => {
+  const { logo } = useSiteLogo();
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -17,7 +19,7 @@ const Header = () => {
 
         <div className="flex items-center gap-2">
           <img 
-            src={goAraguainaLogo} 
+            src={logo} 
             alt="GO Araguaína" 
             className="h-16 w-auto"
           />

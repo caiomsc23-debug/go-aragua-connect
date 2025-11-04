@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import goAraguainaLogo from "@/assets/logo-go-araguaina.png";
 import araguainaCity from "@/assets/araguaina-city.jpg";
 import { supabase } from "@/integrations/supabase/client";
+import { useSiteLogo } from "@/hooks/useSiteLogo";
 
 const HeroSection = () => {
+  const { logo } = useSiteLogo();
   const [content, setContent] = useState({
     title: "Conectando você às oportunidades da cidade.",
     description: "O GO Araguaína é a plataforma que une cidadãos, trabalhadores e empresas locais, promovendo crescimento e novas oportunidades para toda a comunidade.",
@@ -71,7 +72,7 @@ const HeroSection = () => {
           {/* Logo */}
           <div className="mb-8 animate-fade-in">
             <img 
-              src={goAraguainaLogo} 
+              src={logo} 
               alt="GO Araguaína - Logotipo"
               className="w-48 md:w-64 h-auto"
             />

@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import logoImage from "@/assets/logo-go-araguaina.png";
+import { useSiteLogo } from "@/hooks/useSiteLogo";
 
 const jobSchema = z.object({
   nome_vaga: z.string().min(1, "Nome da vaga é obrigatório"),
@@ -35,6 +35,7 @@ interface CompanySession {
 
 const NewJob = () => {
   const navigate = useNavigate();
+  const { logo } = useSiteLogo();
   const [company, setCompany] = useState<CompanySession | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -104,7 +105,7 @@ const NewJob = () => {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header with Logo */}
         <div className="mb-8 text-center">
-          <img src={logoImage} alt="Conecta Araguaína" className="h-16 mx-auto mb-6" />
+          <img src={logo} alt="Conecta Araguaína" className="h-16 mx-auto mb-6" />
         </div>
 
         {/* Main Card */}

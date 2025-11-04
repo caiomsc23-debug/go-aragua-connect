@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import logoImage from "@/assets/logo-go-araguaina.png";
+import { useSiteLogo } from "@/hooks/useSiteLogo";
 
 interface CompanySession {
   id: string;
@@ -20,6 +20,7 @@ interface Job {
 
 const JobsList = () => {
   const navigate = useNavigate();
+  const { logo } = useSiteLogo();
   const [company, setCompany] = useState<CompanySession | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
 
@@ -66,7 +67,7 @@ const JobsList = () => {
       <div className="container mx-auto px-4 py-8 max-w-3xl">
         {/* Header with Logo */}
         <div className="mb-8 text-center">
-          <img src={logoImage} alt="Conecta Araguaína" className="h-16 mx-auto mb-6" />
+          <img src={logo} alt="Conecta Araguaína" className="h-16 mx-auto mb-6" />
         </div>
 
         {/* Main Card */}

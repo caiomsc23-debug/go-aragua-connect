@@ -17,6 +17,7 @@ interface ContentData {
   hero_description: string;
   hero_button_text: string;
   hero_background_image: string;
+  site_logo: string;
 }
 
 const AdminDashboard = () => {
@@ -30,6 +31,7 @@ const AdminDashboard = () => {
     hero_description: "",
     hero_button_text: "",
     hero_background_image: "",
+    site_logo: "",
   });
 
   useEffect(() => {
@@ -49,7 +51,7 @@ const AdminDashboard = () => {
       const { data, error } = await supabase
         .from("site_content")
         .select("key, value")
-        .in("key", ["hero_title", "hero_description", "hero_button_text", "hero_background_image"]);
+        .in("key", ["hero_title", "hero_description", "hero_button_text", "hero_background_image", "site_logo"]);
 
       if (error) throw error;
 
@@ -80,6 +82,7 @@ const AdminDashboard = () => {
         { key: "hero_description", value: { text: content.hero_description } },
         { key: "hero_button_text", value: { text: content.hero_button_text } },
         { key: "hero_background_image", value: { url: content.hero_background_image } },
+        { key: "site_logo", value: { url: content.site_logo } },
       ];
 
       for (const update of updates) {
@@ -180,6 +183,17 @@ const AdminDashboard = () => {
               <ImageUpload
                 currentImage={content.hero_background_image}
                 onImageUploaded={(url) => setContent({ ...content, hero_background_image: url })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Logotipo do Site (GO Araguaína)</Label>
+              <p className="text-sm text-muted-foreground mb-2">
+                Este logotipo será exibido no topo da página e em todo o site
+              </p>
+              <ImageUpload
+                currentImage={content.site_logo}
+                onImageUploaded={(url) => setContent({ ...content, site_logo: url })}
               />
             </div>
 
