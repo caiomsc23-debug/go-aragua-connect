@@ -6,6 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useSiteLogo } from "@/hooks/useSiteLogo";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { EditJobModal } from "@/components/admin/EditJobModal";
+import { Edit } from "lucide-react";
 
 interface CompanySession {
   id: string;
@@ -34,6 +36,7 @@ const JobDetails = () => {
   const { logo } = useSiteLogo();
   const [company, setCompany] = useState<CompanySession | null>(null);
   const [job, setJob] = useState<Job | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     const sessionData = localStorage.getItem("company_session");
@@ -102,6 +105,12 @@ const JobDetails = () => {
 
     toast.success("Vaga excluída com sucesso!");
     navigate("/company-dashboard/jobs-list");
+  };
+
+  const handleJobUpdated = async () => {
+    if (company) {
+      await loadJob(company.id);
+    }
   };
 
   if (!company || !job) {
@@ -195,6 +204,14 @@ const JobDetails = () => {
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
+                onClick={() => setIsEditModalOpen(true)}
+                className="px-12 py-6 text-lg font-bold rounded-xl bg-blue-500 hover:bg-blue-600 text-white gap-2"
+              >
+                <Edit className="w-5 h-5" />
+                EDITAR
+              </Button>
+
+              <Button
                 onClick={toggleJobStatus}
                 className={`px-12 py-6 text-lg font-bold rounded-xl ${
                   job.is_active
@@ -242,6 +259,13 @@ const JobDetails = () => {
           </Button>
         </div>
       </div>
+
+      <EditJobModal
+        job={job}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onJobUpdated={handleJobUpdated}
+      />
     </div>
   );
 };

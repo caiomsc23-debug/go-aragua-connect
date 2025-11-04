@@ -3,8 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2, ChevronDown, ChevronUp, Edit, Trash2, Power, PowerOff } from "lucide-react";
-import { EditJobModal } from "./EditJobModal";
+import { Loader2, ChevronDown, ChevronUp, Trash2, Power, PowerOff } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface Company {
@@ -34,8 +33,6 @@ export const CompaniesManager = () => {
   const [jobs, setJobs] = useState<Record<string, Job[]>>({});
   const [expandedCompanies, setExpandedCompanies] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
-  const [editingJob, setEditingJob] = useState<Job | null>(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     loadCompanies();
@@ -85,23 +82,6 @@ export const CompaniesManager = () => {
       }
     }
     setExpandedCompanies(newExpanded);
-  };
-
-  const handleEditJob = (job: Job) => {
-    setEditingJob(job);
-    setIsEditModalOpen(true);
-  };
-
-  const handleJobUpdated = async () => {
-    if (editingJob) {
-      const companyId = companies.find(c => 
-        jobs[c.id]?.some(j => j.id === editingJob.id)
-      )?.id;
-      
-      if (companyId) {
-        await loadCompanyJobs(companyId);
-      }
-    }
   };
 
   const toggleJobStatus = async (job: Job, companyId: string) => {
@@ -217,15 +197,6 @@ export const CompaniesManager = () => {
                         <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-200">
                           <Button
                             size="sm"
-                            onClick={() => handleEditJob(job)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
-                          >
-                            <Edit className="w-4 h-4" />
-                            Editar
-                          </Button>
-
-                          <Button
-                            size="sm"
                             onClick={() => toggleJobStatus(job, company.id)}
                             className={`${
                               job.is_active
@@ -282,16 +253,6 @@ export const CompaniesManager = () => {
           </Card>
         ))
       )}
-
-      <EditJobModal
-        job={editingJob}
-        isOpen={isEditModalOpen}
-        onClose={() => {
-          setIsEditModalOpen(false);
-          setEditingJob(null);
-        }}
-        onJobUpdated={handleJobUpdated}
-      />
     </div>
   );
 };
