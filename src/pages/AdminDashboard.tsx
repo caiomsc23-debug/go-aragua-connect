@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2, LogOut, Save } from "lucide-react";
 import { ImageUpload } from "@/components/ImageUpload";
 import { SectionManagerButtons } from "@/components/admin/SectionManagerButtons";
+import { CompaniesManager } from "@/components/admin/CompaniesManager";
 
 interface ContentData {
   hero_title: string;
@@ -235,6 +236,18 @@ const AdminDashboard = () => {
                 </>
               )}
             </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Gerenciar Empresas e Vagas</CardTitle>
+            <CardDescription>
+              Visualize empresas cadastradas, edite, ative ou desative suas vagas
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CompaniesManager />
           </CardContent>
         </Card>
 
